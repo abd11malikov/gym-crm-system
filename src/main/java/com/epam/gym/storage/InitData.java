@@ -34,4 +34,13 @@ public class InitData {
     public void setTrainings(List<Training> trainings) {
         this.trainings = trainings;
     }
+
+    @Override
+    public String toString() {
+        return "InitData{" +
+                "trainees=" + trainees +
+                ", trainers=" + trainers +
+                ", trainings=" + trainings +
+                '}';
+    }
 }
