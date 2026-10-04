@@ -1,34 +1,57 @@
 package com.epam.gym;
 
 import com.epam.gym.config.AppConfig;
-import com.epam.gym.dao.TraineeDao;
+import com.epam.gym.facade.GymFacade;
 import com.epam.gym.model.Trainee;
+import com.epam.gym.model.Trainer;
+import com.epam.gym.model.Training;
+import com.epam.gym.model.TrainingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
-import java.util.Map;
-
 
 public class GymCrmApplication {
     private static final Logger log = LoggerFactory.getLogger(GymCrmApplication.class);
 
     public static void main(String[] args) {
-        try(var context = new AnnotationConfigApplicationContext(AppConfig.class)) {
-            log.info("Context started with {} beans",context.getBeanDefinitionCount());
-            Map<Long, Trainee> traineeStorage = (Map<Long, Trainee>) context.getBean("traineeStorage");
-            log.info("Loaded {} trainees into traineeStorage {}",traineeStorage.size(),traineeStorage);
+        try (var context = new AnnotationConfigApplicationContext(AppConfig.class)) {
+            GymFacade facade = context.getBean(GymFacade.class);
 
+            Trainee trainee = new Trainee();
+            trainee.setFirstName("John");
+            trainee.setLastName("Doe");
+            trainee.setDateOfBirth(LocalDate.of(1998, 3, 15));
+            trainee.setAddress("7 Amir Temur Street, Tashkent");
+            facade.createTrainee(trainee);
+            log.info("Created: {}", trainee);
 
-            TraineeDao traineeDao = context.getBean(TraineeDao.class);
-            log.info("list of all trainees {}",traineeDao.findAll().toString());
+            TrainingType yoga = new TrainingType();
+            yoga.setTrainingTypeName("Yoga");
+            Trainer trainer = new Trainer();
+            trainer.setFirstName("Nodira");
+            trainer.setLastName("Karimova");
+            trainer.setSpecialization(yoga);
+            facade.createTrainer(trainer);
+            log.info("Created: {}", trainer);
 
-            Trainee trainee = new Trainee(null,"Jamal","Karimov", "jumanazar01","seshanbabek",true, LocalDate.now(),"qoshnisini qo'shnisi");
+            Training training = new Training();
+            training.setTraineeId(trainee.getUserId());
+            training.setTrainerId(trainer.getUserId());
+            training.setTrainingName("Morning Yoga");
+            training.setTrainingType(yoga);
+            training.setTrainingDate(LocalDate.now().plusDays(1));
+            training.setTrainingDuration(60);
+            facade.createTraining(training);
+            log.info("Created: {}", training);
 
-            traineeDao.create(trainee);
+            trainee.setAddress("15 Navoi Street, Tashkent");
+            facade.updateTrainee(trainee);
+            log.info("Selected after update: {}", facade.selectTrainee(trainee.getUserId()).orElseThrow());
 
-            log.info("list of updated trainees {}",traineeDao.findAll().toString());
+            facade.deleteTrainee(2L);
+            log.info("Trainee 2 present after delete: {}", facade.selectTrainee(2L).isPresent());
         }
     }
 }
