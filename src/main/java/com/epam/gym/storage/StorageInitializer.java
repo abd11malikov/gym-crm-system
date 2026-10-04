@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.io.ClassPathResource;
@@ -52,9 +53,6 @@ public class StorageInitializer implements BeanPostProcessor {
             }
             log.info("{} trainings are added to storage",trainings.size());
         }
-        if (initData == null){
-            initData = getInitData();
-        }
         return bean;
     }
 
@@ -65,7 +63,7 @@ public class StorageInitializer implements BeanPostProcessor {
                 log.info("Loaded init data from {}",initFilePath);
                 return initData;
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new BeanInitializationException("Failed to load storage init data from " + initFilePath, e);
             }
         }
         return initData;
