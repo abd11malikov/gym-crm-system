@@ -9,6 +9,18 @@ public abstract class User {
     private String password;
     private boolean active;
 
+    public User() {
+    }
+
+    public User(Long userId, String firstName, String lastName, String username, String password, boolean active) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.active = active;
+    }
+
     public Long getUserId() {
         return userId;
     }

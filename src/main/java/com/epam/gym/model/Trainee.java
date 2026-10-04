@@ -31,4 +31,14 @@ public class Trainee extends User{
                 ", " + super.toString() +
                 '}';
     }
+
+    public Trainee(){
+
+    }
+
+    public Trainee(Long userId, String firstName, String lastName, String username, String password, boolean active, LocalDate dateOfBirth, String address) {
+        super(userId, firstName, lastName, username, password, active);
+        this.dateOfBirth = dateOfBirth;
+        this.address = address;
+    }
 }
