@@ -9,7 +9,8 @@ public interface TraineeDao {
     Trainee create(Trainee trainee);
 
     /**
-     * If userId is not found, throws RunTimeException()
+     * Throws IllegalArgumentException if userId is null,
+     * NoSuchElementException if no trainee has this userId.
      */
     Trainee update(Trainee trainee);
 
